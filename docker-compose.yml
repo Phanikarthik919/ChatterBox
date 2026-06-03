@@ -1,0 +1,67 @@
+services:
+  # ===== PostgreSQL Database =====
+  postgres:
+    image: postgres:15-alpine
+    container_name: chatterbox-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: chatterbox
+      POSTGRES_USER: chatterbox
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-chatterbox_secret_2024}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chatterbox"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - chatterbox-net
+
+  # ===== ChatterBox Application =====
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: chatterbox-app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      # Active profile
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/chatterbox
+      SPRING_DATASOURCE_USERNAME: chatterbox
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-chatterbox_secret_2024}
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
+      # JWT (override with a strong secret in production!)
+      APP_JWT_SECRET: ${JWT_SECRET:-chatterbox-super-secret-key-that-is-at-least-256-bits-long-for-hs256-algorithm-2024}
+      APP_JWT_EXPIRATION_MS: 86400000
+
+      # File uploads
+      APP_FILE_UPLOAD_DIR: /app/uploads
+
+      # H2 console disabled in production
+      SPRING_H2_CONSOLE_ENABLED: "false"
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - chatterbox-net
+
+volumes:
+  postgres_data:
+    driver: local
+  uploads_data:
+    driver: local
+
+networks:
+  chatterbox-net:
+    driver: bridge
