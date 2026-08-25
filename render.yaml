@@ -1,0 +1,36 @@
+# Render Blueprint -- Infrastructure as Code
+# Deploy via: https://render.com/deploy
+
+services:
+  - type: web
+    name: chatterbox
+    runtime: docker
+    repo: https://github.com/Phanikarthik919/ChatterBox
+    branch: main
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: PORT
+        value: "8080"
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: chatterbox-db
+          property: connectionURI
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: chatterbox-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: chatterbox-db
+          property: password
+      - key: APP_JWT_SECRET
+        generateValue: true
+
+databases:
+  - name: chatterbox-db
+    plan: free
+    databaseName: chatterbox
+    user: chatterbox
