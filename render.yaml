@@ -14,10 +14,18 @@ services:
         value: prod
       - key: PORT
         value: "8080"
-      - key: SPRING_DATASOURCE_URL
+      - key: DB_HOST
         fromDatabase:
           name: chatterbox-db
-          property: connectionURI
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: chatterbox-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: chatterbox-db
+          property: database
       - key: SPRING_DATASOURCE_USERNAME
         fromDatabase:
           name: chatterbox-db
