@@ -30,11 +30,16 @@ app:
     expiration-ms: ${APP_JWT_EXPIRATION_MS:86400000}
 
   file:
-    upload-dir: ${APP_FILE_UPLOAD_DIR:./uploads}
     allowed-extensions: jpg,jpeg,png,gif,webp,pdf,doc,docx,txt,zip,mp4,mp3
 
   cors:
     allowed-origins: ${APP_CORS_ORIGINS:*}
+
+cloudinary:
+  url: ${CLOUDINARY_URL:}
+  cloud-name: ${CLOUDINARY_CLOUD_NAME:}
+  api-key: ${CLOUDINARY_API_KEY:}
+  api-secret: ${CLOUDINARY_API_SECRET:}
 
 logging:
   level:

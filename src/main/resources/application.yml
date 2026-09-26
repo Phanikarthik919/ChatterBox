@@ -37,8 +37,15 @@ app:
     refresh-expiration-ms: 604800000  # 7 days
 
   file:
-    upload-dir: ./uploads
     allowed-extensions: jpg,jpeg,png,gif,webp,pdf,doc,docx,txt,zip,mp4,mp3
 
   cors:
     allowed-origins: http://localhost:8080,http://localhost:3000
+
+cloudinary:
+  # Set CLOUDINARY_URL=cloudinary://api_key:api_secret@cloud_name
+  # or fill individual fields below
+  url: ${CLOUDINARY_URL:}
+  cloud-name: ${CLOUDINARY_CLOUD_NAME:}
+  api-key: ${CLOUDINARY_API_KEY:}
+  api-secret: ${CLOUDINARY_API_SECRET:}

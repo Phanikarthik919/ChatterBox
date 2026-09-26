@@ -36,6 +36,8 @@ services:
           property: password
       - key: APP_JWT_SECRET
         generateValue: true
+      - key: CLOUDINARY_URL
+        sync: false   # you must paste this manually in the Render dashboard
 
 databases:
   - name: chatterbox-db
